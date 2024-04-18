@@ -1,11 +1,11 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import time, json
 import sqlite3
 
 app = Flask(__name__)
 
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
+    conn = sqlite3.connect('university.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -21,9 +21,11 @@ def home_page():
 @app.route('/get/users/', methods=['GET'])
 def index():
     conn = get_db_connection()
-    students = conn.execute('SELECT * FROM Students').fetchall()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM students')
+    students = [dict(row) for row in cursor.fetchall()]
     conn.close()
-    return render_template('index.html', posts=students)
+    return jsonify(students)
 
 if __name__ == "__main__":
     app.run(debug=True)
