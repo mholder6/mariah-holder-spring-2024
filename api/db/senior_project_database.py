@@ -1,7 +1,7 @@
 import sqlite3
 
 # Connect to SQLite database (create if not exists)
-conn = sqlite3.connect("university.db")
+conn = sqlite3.connect("shaw_university.db")
 cursor = conn.cursor()
 
 # Create tables
@@ -27,6 +27,13 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS news (
                     date TEXT,
                     content TEXT,
                     author TEXT)''')
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS statistics (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    mean TEXT,
+                    median TEXT,
+                    mode TEXT,
+                    percentage TEXT)''')
 
 # Sample data
 staff_data = [
@@ -61,11 +68,20 @@ news_data = [
     ("Faculty Spotlight", "2024-04-11", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", "David Wilson")
 ]
 
+statistics_data = [
+    ("100", "90", "85", "95%"),
+    ("98", "85", "80", "92%"),
+    ("88", "78", "75", "85%"),
+    ("95", "88", "82", "90%"),
+    ("92", "85", "80", "88%")
+]
+
 # Insert sample data
 cursor.executemany("INSERT INTO staff (name, position) VALUES (?, ?)", staff_data)
 cursor.executemany("INSERT INTO internships (company, position, duration, location, stipend) VALUES (?, ?, ?, ?, ?)", internships_data)
 cursor.executemany("INSERT INTO students (name, major) VALUES (?, ?)", students_data)
 cursor.executemany("INSERT INTO news (title, date, content, author) VALUES (?, ?, ?, ?)", news_data)
+cursor.executemany("INSERT INTO statistics (mean, median, mode, percentage) VALUES (?, ?, ?, ?)", statistics_data)
 
 # Commit changes and close connection
 conn.commit()
